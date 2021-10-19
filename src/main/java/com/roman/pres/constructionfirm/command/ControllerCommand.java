@@ -1,6 +1,9 @@
 package com.roman.pres.constructionfirm.command;
 
-@FunctionalInterface
+import org.springframework.ui.Model;
+
 public interface ControllerCommand {
     void execute();
+
+    void setModel(Model model);
 }

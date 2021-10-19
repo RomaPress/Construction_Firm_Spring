@@ -2,8 +2,7 @@ package com.roman.pres.constructionfirm.command;
 
 import java.util.Map;
 
-public interface TemplateCommand {
-
+public interface AbstractCommand {
     Map<String, Object> getRequestParameters();
 
     void validate();
