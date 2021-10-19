@@ -4,10 +4,8 @@ import com.roman.pres.constructionfirm.bean.persistence.MaterialBean;
 import com.roman.pres.constructionfirm.bean.persistence.MaterialTypeBean;
 import com.roman.pres.constructionfirm.command.ControllerCommandImpl;
 import com.roman.pres.constructionfirm.services.MaterialService;
-import com.roman.pres.constructionfirm.services.MaterialServiceImpl;
 import net.minidev.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,13 +14,13 @@ import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-@Controller
+@Component
 public class GetMaterialObjectCmdImpl extends ControllerCommandImpl implements GetMaterialObjectCmd {
     private static final String CLASSNAME = GetMaterialObjectCmdImpl.class.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASSNAME);
 
     private MaterialService materialService;
-    private JSONObject materialsJson;
+    private String materialsJson;
 
 
     @Override
@@ -31,38 +29,47 @@ public class GetMaterialObjectCmdImpl extends ControllerCommandImpl implements G
         LOGGER.entering(CLASSNAME, methodName);
 
         List<MaterialBean> materials = materialService.getAllMaterials();
-        materialsJson = materialsToJsonObject(materials);
+        JSONObject jsonObject = materialsToJsonObject(materials);
+        materialsJson = jsonObject.toJSONString();
 
         LOGGER.exiting(CLASSNAME, methodName);
     }
 
     @Override
     public void setResponseProperties() {
-        attributes.addAttribute("materials", materialsJson.toJSONString());
-        super.setResponseProperties();
+        attributes.put("materials", materialsJson);
     }
 
     private JSONObject materialsToJsonObject(List<MaterialBean> materials) {
-        JSONObject json = new JSONObject();
-        Map<String, List<MaterialBean>> map = new HashMap<>();
-        materials.stream()
+        Map<String, List<JSONObject>> map = new HashMap<>();
+        List<String> types = getAvailableTypes(materials);
+        types.forEach(x -> map.put(x, findMaterialsByType(x, materials)));
+        return new JSONObject(map);
+    }
+
+    private List<JSONObject> findMaterialsByType(String type, List<MaterialBean> materials) {
+        return materials.stream()
+                .filter(material -> Objects.equals(material.getMaterialType().getName(), type))
+                .map(material -> {
+                    JSONObject json = new JSONObject();
+                    json.put("price", material.getPrice());
+                    json.put("name", material.getName());
+                    json.put("id", material.getId());
+                    return json;
+                })
+                .collect(Collectors.toList());
+    }
+
+    private List<String> getAvailableTypes(List<MaterialBean> materials) {
+        return materials.stream()
                 .map(MaterialBean::getMaterialType)
                 .map(MaterialTypeBean::getName)
                 .distinct()
-                .forEach(x -> findMaterialByType(x, materials, map));
-        json.putAll(map);
-        return json;
-    }
-
-    private void findMaterialByType(String type, List<MaterialBean> materials, Map<String, List<MaterialBean>> map) {
-        List<MaterialBean> fitMaterials = materials.stream()
-                .filter(x -> Objects.equals(x.getMaterialType().getName(), type))
                 .collect(Collectors.toList());
-        map.put(type, fitMaterials);
     }
 
-    @Autowired
-    public void setMaterialService(MaterialServiceImpl materialService) {
+    @Override
+    public void setMaterialService(MaterialService materialService) {
         this.materialService = materialService;
     }
 }

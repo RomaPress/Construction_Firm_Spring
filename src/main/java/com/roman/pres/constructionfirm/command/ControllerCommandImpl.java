@@ -1,9 +1,10 @@
 package com.roman.pres.constructionfirm.command;
 
-import org.springframework.ui.Model;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class ControllerCommandImpl implements ControllerCommand, AbstractCommand {
-    protected Model attributes;
+    protected Map<String, Object> attributes = new HashMap<>();
 
     @Override
     public final void execute() {
@@ -14,8 +15,13 @@ public abstract class ControllerCommandImpl implements ControllerCommand, Abstra
     }
 
     @Override
-    public void setModel(Model attributes) {
-        this.attributes = attributes;
+    public void setAttributes(Map<String, Object> attributes) {
+        this.attributes.putAll(attributes);
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
     }
 
     @Override

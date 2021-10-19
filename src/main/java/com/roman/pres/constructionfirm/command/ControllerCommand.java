@@ -1,9 +1,11 @@
 package com.roman.pres.constructionfirm.command;
 
-import org.springframework.ui.Model;
+import java.util.Map;
 
 public interface ControllerCommand {
     void execute();
 
-    void setModel(Model attributes);
+    void setAttributes(Map<String, Object> attributes);
+
+    Map<String, Object> getAttributes();
 }
