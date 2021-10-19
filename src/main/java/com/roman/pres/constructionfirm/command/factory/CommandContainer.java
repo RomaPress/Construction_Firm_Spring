@@ -1,8 +1,11 @@
 package com.roman.pres.constructionfirm.command.factory;
 
 import com.roman.pres.constructionfirm.command.ControllerCommandImpl;
+import com.roman.pres.constructionfirm.controller.commands.GetMaterialObjectCmd;
+import com.roman.pres.constructionfirm.controller.commands.GetMaterialObjectCmdImpl;
 import com.roman.pres.constructionfirm.exeption.ControllerCommandException;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class CommandContainer {
@@ -16,8 +19,8 @@ public class CommandContainer {
     }
 
     private static void init() {
-        //todo --> put all commands
-        commands.put("interface name", null);
+        commands = new HashMap<>();
+        commands.put(GetMaterialObjectCmd.NAME, new GetMaterialObjectCmdImpl());
     }
 
     public static ControllerCommandImpl getCommand(String name) throws ControllerCommandException {

@@ -5,5 +5,5 @@ import org.springframework.ui.Model;
 public interface ControllerCommand {
     void execute();
 
-    void setModel(Model model);
+    void setModel(Model attributes);
 }

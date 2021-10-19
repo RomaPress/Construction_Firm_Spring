@@ -2,28 +2,24 @@ package com.roman.pres.constructionfirm.command;
 
 import org.springframework.ui.Model;
 
-import java.util.Map;
-
 public abstract class ControllerCommandImpl implements ControllerCommand, AbstractCommand {
-    private Model model;
+    protected Model attributes;
 
     @Override
     public final void execute() {
-        Map<String, Object> attr = getRequestParameters();
+        setRequestProperties();
         validate();
         performExecute();
-        setResponseParam(attr);
+        setResponseProperties();
     }
 
     @Override
-    public final void setModel(Model model) {
-        this.model = model;
+    public void setModel(Model attributes) {
+        this.attributes = attributes;
     }
 
-
     @Override
-    public Map<String, Object> getRequestParameters() {
-        return model.asMap();
+    public void setRequestProperties() {
     }
 
     @Override
@@ -31,7 +27,6 @@ public abstract class ControllerCommandImpl implements ControllerCommand, Abstra
     }
 
     @Override
-    public void setResponseParam(Map<String, Object> attributes) {
-        model.addAllAttributes(attributes);
+    public void setResponseProperties() {
     }
 }

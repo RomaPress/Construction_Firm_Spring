@@ -2,14 +2,19 @@ package com.roman.pres.constructionfirm.bean.persistence;
 
 import com.roman.pres.constructionfirm.constants.DBConstants;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
 import java.util.Set;
 
-@Data
+
 @Entity
+@Setter
+@Getter
+@Data
 @Table(name = DBConstants.MATERIAL_TABLE)
 public class MaterialBean {
     @Id
