@@ -1,6 +1,6 @@
 package com.roman.pres.constructionfirm.controller.commands;
-
 import com.roman.pres.constructionfirm.bean.persistence.MaterialBean;
+import com.roman.pres.constructionfirm.bean.persistence.MaterialContextDto;
 import com.roman.pres.constructionfirm.bean.persistence.MaterialTypeBean;
 import com.roman.pres.constructionfirm.command.ControllerCommandImpl;
 import com.roman.pres.constructionfirm.services.MaterialService;
@@ -20,7 +20,7 @@ public class GetMaterialObjectCmdImpl extends ControllerCommandImpl implements G
     private static final Logger LOGGER = Logger.getLogger(CLASSNAME);
 
     private MaterialService materialService;
-    private String materialsJson;
+    private MaterialContextDto materialContextDto;
 
 
     @Override
@@ -29,22 +29,21 @@ public class GetMaterialObjectCmdImpl extends ControllerCommandImpl implements G
         LOGGER.entering(CLASSNAME, methodName);
 
         List<MaterialBean> materials = materialService.getAllMaterials();
-        JSONObject jsonObject = materialsToJsonObject(materials);
-        materialsJson = jsonObject.toJSONString();
+        materialContextDto = materialsToJsonObject(materials);
 
         LOGGER.exiting(CLASSNAME, methodName);
     }
 
     @Override
     public void setResponseProperties() {
-        attributes.put("materials", materialsJson);
+        attributes.put("materials", materialContextDto);
     }
 
-    private JSONObject materialsToJsonObject(List<MaterialBean> materials) {
+    private MaterialContextDto materialsToJsonObject(List<MaterialBean> materials) {
         Map<String, List<JSONObject>> map = new HashMap<>();
         List<String> types = getAvailableTypes(materials);
         types.forEach(x -> map.put(x, findMaterialsByType(x, materials)));
-        return new JSONObject(map);
+        return new MaterialContextDto(map);
     }
 
     private List<JSONObject> findMaterialsByType(String type, List<MaterialBean> materials) {

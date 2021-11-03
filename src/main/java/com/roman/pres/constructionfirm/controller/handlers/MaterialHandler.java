@@ -6,12 +6,12 @@ import com.roman.pres.constructionfirm.services.MaterialService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Controller
 @RequestMapping("/material")
 public class MaterialHandler {
 
@@ -24,10 +24,11 @@ public class MaterialHandler {
 
     @SneakyThrows
     @GetMapping(path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String showMaterials() {
+    public String showMaterials(Model model) {
         GetMaterialObjectCmd cmd = (GetMaterialObjectCmd) CommandFactory.createInstance(GetMaterialObjectCmd.NAME);
         cmd.setMaterialService(materialService);
         cmd.execute();
-        return (String) cmd.getAttributes().get("materials");
+        model.addAllAttributes(cmd.getAttributes());
+        return "MaterialListPage";
     }
 }

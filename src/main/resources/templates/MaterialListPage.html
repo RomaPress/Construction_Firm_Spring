@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Materials</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="../js/material.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+
+<div>
+    <h1 th:each="material : ${materials.map}">
+        <span th:text="${material.key}"></span>
+        <h3 th:each="i : ${material.value}">
+            <span th:text="${i.name}"></span>
+        </h3>
+    </h1>
+</div>
+
+</body>
+</html>
